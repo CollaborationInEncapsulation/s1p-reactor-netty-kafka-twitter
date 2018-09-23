@@ -11,13 +11,9 @@ buildscript {
 	}
 }
 
-apply plugin: 'org.springframework.boot'
-
 dependencies {
-  	compile 'com.mapbox.mapboxsdk:mapbox-sdk-services:3.4.1'
-  	compile "io.projectreactor.kafka:reactor-kafka:1.0.1.RELEASE"
-  	compile 'org.twitter4j:twitter4j-core:4.0.7'
-  	compile 'org.twitter4j:twitter4j-stream:4.0.7'
-	compile('org.springframework.boot:spring-boot-starter')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+  	compile "io.projectreactor.kafka:reactor-kafka"
+  	compile 'com.fasterxml.jackson.core:jackson-databind'
+  	compile 'org.twitter4j:twitter4j-core'
+  	compile 'org.twitter4j:twitter4j-stream'
 }

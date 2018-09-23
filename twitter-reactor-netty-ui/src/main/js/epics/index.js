@@ -6,10 +6,10 @@ import { START_STREAM, STOP_STREAM } from '../constants/index';
 
 import { updateMap } from '../actions/index';
 
-const url = (location.protocol.includes("https") ? "wss" : "ws") + "://" + location.host + "/ws";
-const eventSource = new WebSocket(url);
-// const url = '/sse';
-// const eventSource = new EventSource(url);
+// const url = (location.protocol.includes("https") ? "wss" : "ws") + "://" + location.host + "/ws";
+// const eventSource = new WebSocket(url);
+const url = '/sse';
+const eventSource = new EventSource(url);
 const socket$ = Observable.create((observer) => {
     eventSource.onmessage = (e) => {
         console.log(e);

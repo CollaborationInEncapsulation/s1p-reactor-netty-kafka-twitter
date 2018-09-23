@@ -36,3 +36,6 @@ out
 
 ### Twitter ###
 **/twitter4j.properties
+
+### Mapbox ###
+**/mapbox.properties

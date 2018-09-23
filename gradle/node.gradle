@@ -20,16 +20,11 @@ node {
   nodeModulesDir = file(project.projectDir)
 }
 
-task copyJS(type: Copy) {
-  from "${project.buildDir}/resources/main/static/main.js"
-  into "${project.projectDir}/src/main/resources/static/"
+task copyBundle(type: Copy) {
+  from "${project.buildDir}/resources/main/static"
+  into "${project.projectDir}/src/main/resources/static"
 }
 
-task copyHTML(type: Copy) {
-  from "${project.buildDir}/resources/main/static/index.html"
-  into "${project.projectDir}/src/main/resources/templates/"
-}
 
-copyJS.dependsOn(npmInstall, npm_run_build)
-copyHTML.dependsOn(copyJS)
-processResources.dependsOn(copyHTML)
+copyBundle.dependsOn(npmInstall, npm_run_build)
+processResources.dependsOn(copyBundle)

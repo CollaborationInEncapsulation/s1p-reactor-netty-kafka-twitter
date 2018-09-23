@@ -1,19 +1,8 @@
 plugins {
-  id "io.spring.dependency-management" version "1.0.6.RELEASE"
-}
-
-
-dependencyManagement {
-  dependencies {
-	dependency 'io.projectreactor.netty:reactor-netty:0.8.0.RELEASE'
-	dependency 'io.projectreactor:reactor-core:3.2.0.RELEASE'
-	dependency 'io.projectreactor.addons:reactor-addons:3.2.0.RELEASE'
-	dependency group:'commons-logging', name:'commons-logging', version:'1.1.2'
-  }
+	id "io.spring.dependency-management" version "1.0.6.RELEASE"
 }
 
 allprojects {
-
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
 	apply plugin: 'io.spring.dependency-management'
@@ -21,6 +10,24 @@ allprojects {
 	group = 'com.example'
 	version = '0.0.1-SNAPSHOT'
 	sourceCompatibility = 1.8
+  
+	dependencyManagement {
+		dependencies {
+			dependency 'io.projectreactor.netty:reactor-netty:0.8.0.RELEASE'
+			dependency 'io.projectreactor:reactor-core:3.2.0.RELEASE'
+			dependency 'io.projectreactor.addons:reactor-addons:3.2.0.RELEASE'
+			dependency "io.projectreactor.kafka:reactor-kafka:1.0.1.RELEASE"
+
+			dependency 'org.twitter4j:twitter4j-core:4.0.7'
+			dependency 'org.twitter4j:twitter4j-stream:4.0.7'
+
+			dependency 'com.mapbox.mapboxsdk:mapbox-sdk-services:3.4.1'
+			dependency 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
+			dependency 'commons-logging:commons-logging:1.1.2'
+			dependency 'ch.qos.logback:logback-classic:1.2.3'
+		}
+	}
+
 
 	repositories {
 		mavenCentral()

@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -10,6 +10,8 @@ import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.CompletionHandler;
@@ -19,14 +21,20 @@ import java.nio.file.StandardOpenOption;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 
-final class StaticResourceHandler {
+public final class StaticResourceHandler {
 
-	private static final String PATH_TO_STATIC_RESOURCES = "<path-to-static-resources>";
-
-	static BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> serveResource() {
+	public static BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> serveResource() {
 		return (req, res) -> {
 			String uri = req.path();
-			Path path = Paths.get(PATH_TO_STATIC_RESOURCES + ("".equals(uri) ? "index.html" : uri));
+			URI resourceUri;
+			try {
+				resourceUri = ClassLoader.getSystemResource("static").toURI();
+			}
+			catch (URISyntaxException e) {
+				throw new RuntimeException(e);
+			}
+			String location = Paths.get(resourceUri).toAbsolutePath().toString();
+			Path path = Paths.get(location + "/" + ("".equals(uri) ? "index.html" : uri));
 
 			AsynchronousFileChannel channel;
 			try {
