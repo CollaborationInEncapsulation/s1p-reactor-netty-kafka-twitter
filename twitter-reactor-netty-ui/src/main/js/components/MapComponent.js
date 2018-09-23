@@ -9,7 +9,7 @@ import {startStream, stopStream} from '../actions/index';
 // Set your mapbox token here
 const MAPBOX_TOKEN = process.env['MapboxAccessToken']; // eslint-disable-line
 // mapbox style file path
-const MAPBOX_STYLE = 'https://rivulet-zhang.github.io/dataRepo/mapbox/style/map-style-dark-v9.json';
+const MAPBOX_STYLE = 'mapbox://styles/mapbox/basic-v9';
 // sample data
 const DATA_URL = 'https://rivulet-zhang.github.io/dataRepo/text-layer/hashtagsOneDayWithTime.json';
 const SECONDS_PER_DAY = 24 * 60 * 60;
