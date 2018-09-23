@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Devoxx Ukraine Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {margin: 0; font-family: sans-serif; width: 100vw; height: 100vh; overflow: hidden;}
+    .tooltip {pointer-events: none; position: absolute; z-index: 9; font-size: 12px; padding: 8px; background: #000; color: #fff; min-width: 160px; max-height: 240px; overflow-y: hidden;}
+    .tooltip.interactive {pointer-events: all; background: #fcfcfc; color: #444; overflow-y: auto;}
+    .scoreboard {
+      font-size: x-small;
+      height: 80%;
+      width: 20%;
+      overflow: hidden;
+      position: fixed;
+      z-index: 10;
+      background-color: white;
+      padding: 20px;
+      margin: 20px;
+      -webkit-box-shadow: -6px 6px 112px -23px rgba(0,0,0,0.84);
+      -moz-box-shadow: -6px 6px 112px -23px rgba(0,0,0,0.84);
+      box-shadow: -6px 6px 112px -23px rgba(0,0,0,0.84);
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+</body>
+</html>

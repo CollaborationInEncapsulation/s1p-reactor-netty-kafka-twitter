@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.fps > div {
+  position: absolute !important;
+  bottom: 24px !important;
+  right: 10px !important;
+  top: inherit !important;
+  left: inherit !important;
+}
+
+.scoreboard {
+  height: 100vh;
+  width: 10%;
+  overflow: hidden;
+  position: fixed;
+  z-index: 10;
+  background-color: white;
+  padding: 20px;
+  margin: 20px;
+  -webkit-box-shadow: -6px 6px 112px -23px rgba(0,0,0,0.84);
+  -moz-box-shadow: -6px 6px 112px -23px rgba(0,0,0,0.84);
+  box-shadow: -6px 6px 112px -23px rgba(0,0,0,0.84);
+}
