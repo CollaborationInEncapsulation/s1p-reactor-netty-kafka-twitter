@@ -11,16 +11,14 @@ buildscript {
 	}
 }
 
-apply plugin: 'org.springframework.boot'
 apply from: '../gradle/node.gradle'
 
 dependencies {
-  	compile 'com.mapbox.mapboxsdk:mapbox-sdk-services:3.4.1'
-  	compile "io.projectreactor.kafka:reactor-kafka:1.0.1.RELEASE"
-  	compile 'org.twitter4j:twitter4j-core:4.0.7'
-  	compile 'org.twitter4j:twitter4j-stream:4.0.7'
-	compile('org.springframework.boot:spring-boot-starter')
-	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
-	compile('org.springframework.boot:spring-boot-starter-webflux')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile 'com.mapbox.mapboxsdk:mapbox-sdk-services:3.4.1'
+	compile "io.projectreactor.kafka:reactor-kafka:1.0.1.RELEASE"
+	compile 'io.projectreactor.netty:reactor-netty:0.8.0.RELEASE'
+	compile 'org.twitter4j:twitter4j-core:4.0.7'
+	compile 'org.twitter4j:twitter4j-stream:4.0.7'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
+	compile 'ch.qos.logback:logback-classic:1.2.3'
 }
