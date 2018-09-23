@@ -3,9 +3,12 @@ package com.example.demo;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.codec.http.HttpMethod;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -17,22 +20,25 @@ import okio.Buffer;
 import okio.Okio;
 import okio.Sink;
 import okio.Timeout;
+import org.reactivestreams.Publisher;
 import reactor.core.Disposable;
 import reactor.core.publisher.BaseSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.SignalType;
+import reactor.netty.ByteBufMono;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.http.client.HttpClientResponse;
 
-public class NettyCallFactory implements Call.Factory {
+public class ReactorNettyCallFactory implements Call.Factory {
 
     private final HttpClient client;
 
-    public NettyCallFactory() {
+    ReactorNettyCallFactory() {
         this(HttpClient.create());
     }
 
-    public NettyCallFactory(HttpClient client) {
+    ReactorNettyCallFactory(HttpClient client) {
         this.client = client;
     }
 
@@ -40,62 +46,75 @@ public class NettyCallFactory implements Call.Factory {
     public Call newCall(Request request) {
         Objects.requireNonNull(request);
 
-        class NettyCall implements Call {
+        class ReactorNettyCall implements Call {
             final AtomicReference<Disposable> disposable = new AtomicReference<>();
-            final Mono<Response> executable = client
-                .baseUrl(request.url().toString())
-                .request(HttpMethod.valueOf(request.method().toUpperCase()))
-                .send(Flux.create(sink -> {
+
+            final Mono<Response> executable =
+                    client.headers(h -> request.headers()
+                                               .names()
+                                               .forEach(n -> h.add(n, request.header(n))))
+                          .wiretap()
+                          .request(HttpMethod.valueOf(request.method()
+                                                             .toUpperCase()))
+                          .uri(request.url()
+                                      .toString())
+                          .send(prepareRequest())
+                          .responseSingle(prepareResponse());
+
+            private Publisher<ByteBuf> prepareRequest() {
+                return Flux.create(sink -> {
                     try {
                         if (request.body() != null) {
-                            request
-                                .body()
-                                .writeTo(Okio.buffer(new Sink() {
-                                    @Override
-                                    public void write(Buffer source, long byteCount) throws IOException {
-                                        sink.next(Unpooled.copiedBuffer(source.readByteArray(byteCount)));
-                                    }
+                            request.body()
+                                   .writeTo(Okio.buffer(new Sink() {
+                                       @Override
+                                       public void write(Buffer source, long byteCount) throws IOException {
+                                           sink.next(ByteBufAllocator.DEFAULT
+                                                                     .buffer()
+                                                                     .writeBytes(source.readByteArray(byteCount)));
+                                       }
 
-                                    @Override
-                                    public void flush() {
+                                       @Override
+                                       public void flush() {
 
-                                    }
+                                       }
 
-                                    @Override
-                                    public Timeout timeout() {
-                                        return Timeout.NONE;
-                                    }
+                                       @Override
+                                       public Timeout timeout() {
+                                           return Timeout.NONE;
+                                       }
 
-                                    @Override
-                                    public void close() {
-                                        sink.complete();
-                                    }
-                                }));
-                        }
-                        else {
+                                       @Override
+                                       public void close() {
+                                           sink.complete();
+                                       }
+                                   }));
+                        } else {
                             sink.complete();
                         }
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         sink.error(e);
                     }
-                }))
-                .responseSingle((response, bodyMono) -> bodyMono
-                    .asByteArray()
-                    .map(bytes -> {
-                        Response.Builder builder = new Response.Builder().request(request);
-                        response.responseHeaders()
-                                .entries()
-                                .forEach(e -> builder.addHeader(e.getKey(), e.getValue()));
+                });
+            }
 
-                        return builder
-                           .body(ResponseBody.create(null, bytes))
-                           .code(response.status().code())
-                           .protocol(Protocol.HTTP_1_1)
-                           .message(response.status().reasonPhrase())
-                           .build();
-                    })
-                );
+            private BiFunction<HttpClientResponse, ByteBufMono, Mono<Response>> prepareResponse() {
+                return (response, bodyMono) ->
+                        bodyMono.asByteArray()
+                                .map(bytes -> {
+                                    Response.Builder builder = new Response.Builder().request(request);
+
+                                    response.responseHeaders()
+                                            .entries()
+                                            .forEach(e -> builder.addHeader(e.getKey(), e.getValue()));
+
+                                    return builder.body(ResponseBody.create(null, bytes))
+                                            .code(response.status().code())
+                                            .protocol(Protocol.HTTP_1_1)
+                                            .message(response.status().reasonPhrase())
+                                            .build();
+                                });
+            }
 
             @Override
             public Request request() {
@@ -105,10 +124,11 @@ public class NettyCallFactory implements Call.Factory {
             @Override
             public Response execute() {
                 CountDownLatch latch = new CountDownLatch(1);
-                class ResponseSubscriber extends
-                                         BaseSubscriber<Response> {
+
+                class ResponseSubscriber extends BaseSubscriber<Response> {
                     Response response;
                     Throwable throwable;
+
                     @Override
                     protected void hookOnNext(Response value) {
                         response = value;
@@ -124,12 +144,13 @@ public class NettyCallFactory implements Call.Factory {
                         latch.countDown();
                     }
                 }
+
                 ResponseSubscriber subscriber = new ResponseSubscriber();
 
                 if (disposable.compareAndSet(null, subscriber)) {
                     executable.subscribe(subscriber);
                     try {
-                        latch.await();
+                        latch.await(60, TimeUnit.SECONDS);
                         if (subscriber.throwable != null) {
                             throw new RuntimeException(subscriber.throwable);
                         }
@@ -146,7 +167,6 @@ public class NettyCallFactory implements Call.Factory {
             @Override
             public void enqueue(Callback responseCallback) {
                 class CallbackSubscriber extends BaseSubscriber<Response> {
-
                     Response response;
 
                     @Override
@@ -157,7 +177,7 @@ public class NettyCallFactory implements Call.Factory {
                     @Override
                     protected void hookOnComplete() {
                         try {
-                            responseCallback.onResponse(NettyCall.this, response);
+                            responseCallback.onResponse(ReactorNettyCall.this, response);
                         }
                         catch (IOException e) {
                             throw new RuntimeException(e);
@@ -166,7 +186,7 @@ public class NettyCallFactory implements Call.Factory {
 
                     @Override
                     protected void hookOnError(Throwable throwable) {
-                        responseCallback.onFailure(NettyCall.this, new IOException(throwable));
+                        responseCallback.onFailure(ReactorNettyCall.this, new IOException(throwable));
                     }
                 }
 
@@ -202,10 +222,10 @@ public class NettyCallFactory implements Call.Factory {
 
             @Override
             public Call clone() {
-                return new NettyCall();
+                return new ReactorNettyCall();
             }
         }
 
-        return new NettyCall();
+        return new ReactorNettyCall();
     }
 }

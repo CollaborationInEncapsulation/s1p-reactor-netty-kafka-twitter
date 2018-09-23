@@ -32,7 +32,7 @@ final class WebSocketHandler {
 	private static final Flux<Tweet> tweetsFlux = Flux.<Tweet>create(sink ->
 			new TwitterStreamFactory().getInstance().addListener(new StatusListener() {
 
-				private final NettyCallFactory factory = new NettyCallFactory();
+				private final ReactorNettyCallFactory factory = new ReactorNettyCallFactory();
 
 				@Override
 				public void onStatus(Status status) {
