@@ -1,7 +1,6 @@
 package com.example.demo.retrofit;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -13,7 +12,6 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.internal.platform.Platform;
 import okio.Buffer;
 import okio.Okio;
 import okio.Sink;
@@ -24,7 +22,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.ByteBufMono;
 import reactor.netty.http.client.HttpClientResponse;
 
-public class RetrofitAdapterUtils {
+final class RetrofitAdapterUtils {
 
     static Consumer<? super HttpHeaders> adaptHeaders(Request request) {
         return h -> request.headers()
@@ -48,11 +46,10 @@ public class RetrofitAdapterUtils {
                     request.body()
                            .writeTo(Okio.buffer(new Sink() {
                                @Override
-                               public void write(Buffer source, long byteCount) throws
-                                                                                IOException {
+                               public void write(Buffer source, long byteCount) throws IOException {
                                    sink.next(ByteBufAllocator.DEFAULT
-                                           .buffer()
-                                           .writeBytes(source.readByteArray(byteCount)));
+                                                             .buffer()
+                                                             .writeBytes(source.readByteArray(byteCount)));
                                }
 
                                @Override
@@ -86,18 +83,16 @@ public class RetrofitAdapterUtils {
                 .map(bytes -> {
                     Response.Builder builder = new Response.Builder();
 
-                    response
-                        .responseHeaders()
-                        .entries()
-                        .forEach(e -> builder.addHeader(e.getKey(), e.getValue()));
+                    response.responseHeaders()
+                            .entries()
+                            .forEach(e -> builder.addHeader(e.getKey(), e.getValue()));
 
-                    return builder
-                        .request(request)
-                        .body(ResponseBody.create(null, bytes))
-                        .code(response.status().code())
-                        .protocol(Protocol.HTTP_1_1)
-                        .message(response.status().reasonPhrase())
-                        .build();
+                    return builder.request(request)
+                                  .body(ResponseBody.create(null, bytes))
+                                  .code(response.status().code())
+                                  .protocol(Protocol.HTTP_1_1)
+                                  .message(response.status().reasonPhrase())
+                                  .build();
                 });
     }
 }

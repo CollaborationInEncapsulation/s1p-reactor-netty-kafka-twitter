@@ -11,11 +11,11 @@ import reactor.netty.http.websocket.WebsocketOutbound;
 
 public final class WebSocketHandler {
 
-	public static BiFunction<WebsocketInbound, WebsocketOutbound, Publisher<Void>> serveWebsocket(Flux<Tweet> tweetsFlux) {
-		return (in, out) -> tweetsFlux
-			.map(SerializingUtils::toByteBuffer)
-			.transform(flux -> out.options(NettyPipeline.SendOptions::flushOnEach)
-			                      .sendObject(flux));
-	}
+    public static BiFunction<WebsocketInbound, WebsocketOutbound, Publisher<Void>> serveWebsocket(Flux<Tweet> tweetsFlux) {
+        return (in, out) ->
+                tweetsFlux.map(SerializingUtils::toByteBuffer)
+                          .transform(flux -> out.options(NettyPipeline.SendOptions::flushOnEach)
+                                                .sendObject(flux));
+    }
 
 }

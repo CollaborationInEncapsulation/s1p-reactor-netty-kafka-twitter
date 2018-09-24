@@ -21,13 +21,12 @@ public class ReactorNettyCallFactory implements Call.Factory {
 
         return new ReactorNettyCall(
             request,
-            client
-                .headers(RetrofitAdapterUtils.adaptHeaders(request))
-                .wiretap()
-                .request(RetrofitAdapterUtils.adaptMethod(request))
-                .uri(RetrofitAdapterUtils.adaptURI(request))
-                .send(RetrofitAdapterUtils.adaptBody(request))
-                .responseSingle(RetrofitAdapterUtils.adaptResponse(request))
+            client.headers(RetrofitAdapterUtils.adaptHeaders(request))
+                  .wiretap()
+                  .request(RetrofitAdapterUtils.adaptMethod(request))
+                  .uri(RetrofitAdapterUtils.adaptURI(request))
+                  .send(RetrofitAdapterUtils.adaptBody(request))
+                  .responseSingle(RetrofitAdapterUtils.adaptResponse(request))
         );
     }
 }

@@ -19,21 +19,20 @@ public class ReactorNettyApplication {
         TwitterStreamService twitterStreamService = new KafkaTwitterStreamService();
         LocationEnrichService locationEnrichService = new MapboxLocationEnrichService();
 
-        Flux<Tweet> tweetsFlux = twitterStreamService
-            .stream()
-            .transform(locationEnrichService::enrich)
-            .subscribeWith(ReplayProcessor.create(1000));
+        Flux<Tweet> tweetsFlux =
+                twitterStreamService.stream()
+                                    .transform(locationEnrichService::enrich)
+                                    .subscribeWith(ReplayProcessor.create(1000));
 
-        HttpServer
-            .create()
-            .port(8080)
-            .route(r -> r.get("/sse", SseHandler.serveSse(tweetsFlux))
-                         .ws("/ws", WebSocketHandler.serveWebsocket(tweetsFlux))
-                         .get("/{fileName}", StaticResourceHandler.serveResource())
-                         .get("/data/{fileName}", StaticResourceHandler.serveResource()))
-            .wiretap()
-            .bind()
-            .flatMap(DisposableServer::onDispose)
-            .block();
+        HttpServer.create()
+                  .port(8080)
+                  .route(r -> r.get("/sse", SseHandler.serveSse(tweetsFlux))
+                               .ws("/ws", WebSocketHandler.serveWebsocket(tweetsFlux))
+                               .get("/{fileName}", StaticResourceHandler.serveResource())
+                               .get("/data/{fileName}", StaticResourceHandler.serveResource()))
+                  .wiretap()
+                  .bind()
+                  .flatMap(DisposableServer::onDispose)
+                  .block();
     }
 }

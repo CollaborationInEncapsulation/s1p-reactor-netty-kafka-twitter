@@ -23,91 +23,88 @@ import java.util.function.BiFunction;
 
 public final class StaticResourceHandler {
 
-	public static BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> serveResource() {
-		return (req, res) -> {
-			String uri = req.path();
-			URI resourceUri;
-			try {
-				resourceUri = ClassLoader.getSystemResource("static").toURI();
-			}
-			catch (URISyntaxException e) {
-				throw new RuntimeException(e);
-			}
-			String location = Paths.get(resourceUri).toAbsolutePath().toString();
-			Path path = Paths.get(location + "/" + ("".equals(uri) ? "index.html" : uri));
+    public static BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> serveResource() {
+        return (req, res) -> {
+            String uri = req.path();
+            URI resourceUri;
+            try {
+                resourceUri = ClassLoader.getSystemResource("static").toURI();
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
 
-			AsynchronousFileChannel channel;
-			try {
-				channel = AsynchronousFileChannel.open(path, StandardOpenOption.READ);
-			} catch (IOException e) {
-				return Mono.error(e);
-			}
+            Path path = Paths.get(resourceUri).resolve(("".equals(uri) ? "index.html" : uri));
 
-			return res.send(
-					Flux.create(fluxSink -> {
-						fluxSink.onDispose(() -> {
-							try {
-								if (channel != null) {
-									channel.close();
-								}
-							} catch (IOException ignored) {
-							}
-						});
+            AsynchronousFileChannel channel;
+            try {
+                channel = AsynchronousFileChannel.open(path, StandardOpenOption.READ);
+            } catch (IOException e) {
+                return Mono.error(e);
+            }
 
-						ByteBuffer buf = ByteBuffer.allocate(4096);
-						channel.read(buf, 0, buf, new CompletionHandlerImpl(channel, fluxSink, 4096));
-					}));
-		};
-	}
+            return res.send(
+                    Flux.create(fluxSink -> {
+                        fluxSink.onDispose(() -> {
+                            try {
+                                if (channel != null) {
+                                    channel.close();
+                                }
+                            } catch (IOException ignored) {
+                            }
+                        });
 
-	private static final class CompletionHandlerImpl implements CompletionHandler<Integer, ByteBuffer> {
+                        ByteBuffer buf = ByteBuffer.allocate(8092);
+                        channel.read(buf, 0, buf, new CompletionHandlerImpl(channel, fluxSink, 8092));
+                    }));
+        };
+    }
 
-		private final AsynchronousFileChannel channel;
+    private static final class CompletionHandlerImpl implements CompletionHandler<Integer, ByteBuffer> {
 
-		private final FluxSink<ByteBuf> sink;
+        private final AsynchronousFileChannel channel;
 
-		private final int chunk;
+        private final FluxSink<ByteBuf> sink;
 
-		private AtomicLong position;
+        private final int chunk;
 
-		CompletionHandlerImpl(AsynchronousFileChannel channel, FluxSink<ByteBuf> sink, int chunk) {
-			this.channel = channel;
-			this.sink = sink;
-			this.chunk = chunk;
-			this.position = new AtomicLong(0);
-		}
+        private final AtomicLong position = new AtomicLong(0);
 
-		@Override
-		public void completed(Integer read, ByteBuffer dataBuffer) {
-			if (read != -1) {
-				long pos = this.position.addAndGet(read);
-				dataBuffer.flip();
-				ByteBuf buf = ByteBufAllocator.DEFAULT.buffer().writeBytes(dataBuffer);
-				this.sink.next(buf);
+        CompletionHandlerImpl(AsynchronousFileChannel channel, FluxSink<ByteBuf> sink, int chunk) {
+            this.channel = channel;
+            this.sink = sink;
+            this.chunk = chunk;
+        }
 
-				if (!this.sink.isCancelled()) {
-					ByteBuffer newByteBuffer = ByteBuffer.allocate(chunk);
-					this.channel.read(newByteBuffer, pos, newByteBuffer, this);
-				}
-			}
-			else {
-				try {
-					channel.close();
-				}
-				catch (IOException ignored) {
-				}
-				this.sink.complete();
-			}
-		}
+        @Override
+        public void completed(Integer read, ByteBuffer dataBuffer) {
+            if (read != -1) {
+                long pos = this.position.addAndGet(read);
+                dataBuffer.flip();
+                ByteBuf buf = ByteBufAllocator.DEFAULT
+                                              .buffer()
+                                              .writeBytes(dataBuffer);
+                this.sink.next(buf);
 
-		@Override
-		public void failed(Throwable exc, ByteBuffer dataBuffer) {
-			try {
-				channel.close();
-			}
-			catch (IOException ignored) {
-			}
-			this.sink.error(exc);
-		}
-	}
+                if (!this.sink.isCancelled()) {
+                    ByteBuffer newByteBuffer = ByteBuffer.allocate(chunk);
+                    this.channel.read(newByteBuffer, pos, newByteBuffer, this);
+                }
+            } else {
+                try {
+                    channel.close();
+                } catch (IOException ignored) {
+                }
+                this.sink.complete();
+            }
+        }
+
+        @Override
+        public void failed(Throwable exc, ByteBuffer dataBuffer) {
+            try {
+                channel.close();
+            } catch (IOException ignored) {
+            }
+            this.sink.error(exc);
+        }
+    }
 }

@@ -8,7 +8,7 @@ import reactor.kafka.receiver.KafkaReceiver;
 
 public class KafkaTwitterStreamService implements TwitterStreamService {
 
-    Flux<RawTweet> tweetsFlux;
+    final Flux<RawTweet> tweetsFlux;
 
     public KafkaTwitterStreamService() {
         this.tweetsFlux = KafkaReceiver
@@ -16,8 +16,8 @@ public class KafkaTwitterStreamService implements TwitterStreamService {
                                 .subscription(Collections.singleton("tweets")))
             .receive()
             .concatMap(record -> record.receiverOffset()
-                                     .commit()
-                                     .thenReturn(record.value()));
+                                       .commit()
+                                       .thenReturn(record.value()));
 
     }
 
