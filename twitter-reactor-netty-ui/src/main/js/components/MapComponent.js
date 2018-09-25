@@ -9,7 +9,7 @@ import {startStream, stopStream} from '../actions/index';
 // Set your mapbox token here
 const MAPBOX_TOKEN = process.env['MapboxAccessToken']; // eslint-disable-line
 // mapbox style file path
-const MAPBOX_STYLE = 'mapbox://styles/mapbox/dark-v9';
+const MAPBOX_STYLE = 'mapbox://styles/mapbox/basic-v9';
 
 export const INITIAL_VIEW_STATE = {
     longitude: -35,
