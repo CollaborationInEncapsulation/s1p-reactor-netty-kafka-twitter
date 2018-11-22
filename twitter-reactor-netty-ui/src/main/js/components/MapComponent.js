@@ -5,6 +5,7 @@ import {StaticMap} from 'react-map-gl';
 import {connect} from 'react-redux';
 import DeckGL, {IconLayer, TextLayer} from 'deck.gl';
 import {startStream, stopStream} from '../actions/index';
+import Scoreboard from './Scoreboard';
 
 // Set your mapbox token here
 const MAPBOX_TOKEN = process.env['MapboxAccessToken']; // eslint-disable-line
@@ -130,26 +131,26 @@ export class MapComponent extends Component {
     const { viewState, controller = true, baseMap = true } = this.props;
 
     return (
-      <DeckGL
-        layers={this._renderLayers()}
-        initialViewState={INITIAL_VIEW_STATE}
-        viewState={viewState}
-        controller={controller}
-        // parameters={{
-        //   blendFunc: [GL.SRC_ALPHA, GL.ONE, GL.ONE_MINUS_DST_ALPHA, GL.ONE],
-        //   blendEquation: GL.FUNC_ADD
-        // }}
-      >
-        {baseMap && (
-          <StaticMap
-            reuseMaps
-            mapStyle={MAPBOX_STYLE}
+        <DeckGL
+          layers={this._renderLayers()}
+          initialViewState={INITIAL_VIEW_STATE}
+          viewState={viewState}
+          controller={controller}
+          // parameters={{
+          //   blendFunc: [GL.SRC_ALPHA, GL.ONE, GL.ONE_MINUS_DST_ALPHA, GL.ONE],
+          //   blendEquation: GL.FUNC_ADD
+          // }}
+        >
+          {baseMap && (
+            <StaticMap
+              reuseMaps
+              mapStyle={MAPBOX_STYLE}
 
-            preventStyleDiffing={true}
-            mapboxApiAccessToken={MAPBOX_TOKEN}
-          />
-        )}
-      </DeckGL>
+              preventStyleDiffing={true}
+              mapboxApiAccessToken={MAPBOX_TOKEN}
+            />
+          )}
+        </DeckGL>
     );
   }
 }

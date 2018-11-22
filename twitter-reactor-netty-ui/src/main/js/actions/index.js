@@ -1,4 +1,4 @@
-import { START_STREAM, STOP_STREAM, UPDATE_MAP } from '../constants/index'
+import { START_STREAM, STOP_STREAM, UPDATE_MAP, UPDATE_SCORE } from '../constants/index'
 
 
 export function startStream() {
