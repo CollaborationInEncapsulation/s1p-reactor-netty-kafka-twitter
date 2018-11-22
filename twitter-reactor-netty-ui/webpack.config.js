@@ -8,6 +8,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const CONFIG = {
+
+  devServer: {
+    contentBase: "./dist",
+    compress: true,
+    port: 8080
+  },
+
   mode: 'development',
 
   entry: {

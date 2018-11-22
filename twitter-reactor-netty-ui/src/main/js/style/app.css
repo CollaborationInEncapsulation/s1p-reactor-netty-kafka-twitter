@@ -11,3 +11,10 @@ body {
   top: inherit !important;
   left: inherit !important;
 }
+
+.scoreboard {
+  height: 100vh;
+  position: absolute;
+  z-index: 10;
+  background-color: white;
+}
