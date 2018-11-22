@@ -15,7 +15,9 @@ apply from: '../gradle/node.gradle'
 
 dependencies {
 	compile 'com.mapbox.mapboxsdk:mapbox-sdk-services'
-	compile "io.projectreactor.kafka:reactor-kafka"
+  	compile 'com.github.CollaborationInEncapsulation:okhttp-reactor-netty'
+	compile 'io.projectreactor.addons:reactor-extra'
+	compile 'io.projectreactor.kafka:reactor-kafka'
 	compile 'io.projectreactor.netty:reactor-netty'
 	compile 'org.twitter4j:twitter4j-core'
 	compile 'org.twitter4j:twitter4j-stream'
