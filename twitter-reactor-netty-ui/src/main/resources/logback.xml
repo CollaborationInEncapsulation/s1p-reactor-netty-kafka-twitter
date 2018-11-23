@@ -23,7 +23,7 @@
 
     <!-- Direct all logging through the AsyncAppender. -->
     <root level="info">
-        <appender-ref ref="file"/>
+        <appender-ref ref="async"/>
     </root>
 
     <logger name="reactor.netty" level="INFO" />
