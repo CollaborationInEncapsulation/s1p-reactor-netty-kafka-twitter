@@ -14,6 +14,7 @@ buildscript {
 apply from: '../gradle/node.gradle'
 
 dependencies {
+	compile 'io.projectreactor.netty:reactor-netty'
 	compile 'org.twitter4j:twitter4j-core'
 	compile 'org.twitter4j:twitter4j-stream'
 	compile 'com.fasterxml.jackson.core:jackson-databind'
