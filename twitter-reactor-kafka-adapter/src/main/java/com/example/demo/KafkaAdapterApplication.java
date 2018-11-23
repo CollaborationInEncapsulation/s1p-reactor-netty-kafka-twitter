@@ -12,9 +12,14 @@ import reactor.util.Loggers;
 public class KafkaAdapterApplication {
 
     public static void main(String[] args) {
+        Loggers.useConsoleLoggers();
+        TwitterStreamService twitterStreamService = new Twitter4jStreamService();
+        KafkaSender<String, RawTweet> kafkaSender = KafkaSender.create(KafkaCommons.resource("kafka.properties"));
 
-        // Integration with Reactor Kafka
-
+        twitterStreamService.stream()
+                            .map(rawTweet -> SenderRecord.create(new ProducerRecord<>("tweets", rawTweet.getId(), rawTweet), rawTweet.getId()))
+                            .transform(kafkaSender::send)
+                            .blockLast();
     }
 
 }

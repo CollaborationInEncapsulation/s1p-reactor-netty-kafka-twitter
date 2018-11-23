@@ -8,15 +8,17 @@ import com.example.demo.utils.SseHandler;
 import com.example.demo.utils.StaticResourceHandler;
 import com.example.demo.utils.WebSocketHandler;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.ReplayProcessor;
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 
 public class ReactorNettyApplication {
 
     public static void main(String[] args) {
-        // Integration with Reactor Kafka
-        // Flux<RawTweet> tweetsFlux = ...
+        TwitterStreamService twitterStreamService = new KafkaTwitterStreamService();
+        Flux<RawTweet> tweetsFlux =
+                twitterStreamService.stream()
+                        .publish()
+                        .autoConnect(1);
 
         HttpServer.create()
                 .port(8080)

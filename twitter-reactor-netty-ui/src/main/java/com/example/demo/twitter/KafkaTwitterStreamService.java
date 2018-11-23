@@ -11,8 +11,13 @@ public class KafkaTwitterStreamService implements TwitterStreamService {
     final Flux<RawTweet> tweetsFlux;
 
     public KafkaTwitterStreamService() {
-        // Integration with Reactor Kafka
-        // this.tweetsFlux = ...
+        this.tweetsFlux = KafkaReceiver
+            .create(KafkaCommons.<String, RawTweet>resource("kafka.properties")
+                                .subscription(Collections.singleton("tweets")))
+            .receive()
+            .concatMap(record -> record.receiverOffset()
+                                       .commit()
+                                       .thenReturn(record.value()));
 
     }
 
