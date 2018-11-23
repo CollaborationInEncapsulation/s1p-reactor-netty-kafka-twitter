@@ -16,9 +16,10 @@ public class ReactorNettyApplication {
 
     public static void main(String[] args) {
         TwitterStreamService twitterStreamService = new KafkaTwitterStreamService();
-        // Integration with Mapbox
+        LocationEnrichService locationEnrichService = new MapboxLocationEnrichService();
         Flux<Tweet> tweetsFlux =
                 twitterStreamService.stream()
+                        .transform(locationEnrichService::enrich)
                         .publish()
                         .autoConnect(1);
 

@@ -14,6 +14,7 @@ import reactor.okhttp.netty.ReactorNettyCallFactory;
 
 public class MapboxLocationEnrichService implements LocationEnrichService {
 
+    final ReactorNettyCallFactory nettyCallFactory = new ReactorNettyCallFactory();
     final MapboxProperties mapboxProperties = MapboxProperties.load();
 
     @Override
@@ -31,7 +32,7 @@ public class MapboxLocationEnrichService implements LocationEnrichService {
                                     .mode(GeocodingCriteria.MODE_PLACES)
                                     .build();
 
-                            // Integration with Reactor Netty HTTP Client
+                            client.setCallFactory(nettyCallFactory);
 
                             client.enqueueCall(LambdaCallback.create((response, e) -> {
                                 if(response == null || response.body() == null || response.body().features().isEmpty()) {
