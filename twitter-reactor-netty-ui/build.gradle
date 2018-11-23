@@ -15,7 +15,8 @@ apply from: '../gradle/node.gradle'
 
 dependencies {
 	compile 'com.mapbox.mapboxsdk:mapbox-sdk-services'
-  	compile 'com.github.CollaborationInEncapsulation:okhttp-reactor-netty'
+	compile 'com.github.CollaborationInEncapsulation:okhttp-reactor-netty'
+	compile 'io.projectreactor.addons:reactor-logback'
 	compile 'io.projectreactor.addons:reactor-extra'
 	compile 'io.projectreactor.kafka:reactor-kafka'
 	compile 'io.projectreactor.netty:reactor-netty'
