@@ -1,7 +1,8 @@
 package com.example.demo;
 
+import com.example.demo.mapbox.LocationEnrichService;
+import com.example.demo.mapbox.MapboxLocationEnrichService;
 import com.example.demo.twitter.KafkaTwitterStreamService;
-import com.example.demo.twitter.RawTweet;
 import com.example.demo.twitter.Tweet;
 import com.example.demo.twitter.TwitterStreamService;
 import com.example.demo.utils.SseHandler;
@@ -15,7 +16,8 @@ public class ReactorNettyApplication {
 
     public static void main(String[] args) {
         TwitterStreamService twitterStreamService = new KafkaTwitterStreamService();
-        Flux<RawTweet> tweetsFlux =
+        // Integration with Mapbox
+        Flux<Tweet> tweetsFlux =
                 twitterStreamService.stream()
                         .publish()
                         .autoConnect(1);
