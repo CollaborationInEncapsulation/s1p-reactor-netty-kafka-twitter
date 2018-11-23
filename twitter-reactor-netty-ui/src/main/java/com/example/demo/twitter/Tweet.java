@@ -2,14 +2,21 @@ package com.example.demo.twitter;
 
 import java.util.Arrays;
 
-public class RawTweet {
+public class Tweet {
 
-    private String   id;
-    private String   user;
-    private String   content;
-    private String[] tags;
-    private double[] location;
-    private String   userLocation;
+    private final String   id;
+    private final String   user;
+    private final String   content;
+    private final String[] tags;
+    private final double[] location;
+
+    public Tweet(String id, String user, String content, String[] tags, double[] location) {
+        this.id = id;
+        this.user = user;
+        this.content = content;
+        this.location = location;
+        this.tags = tags;
+    }
 
     public String getId() {
         return id;
@@ -31,34 +38,6 @@ public class RawTweet {
         return location;
     }
 
-    public String getUserLocation() {
-        return userLocation;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
-
-    public void setLocation(double[] location) {
-        this.location = location;
-    }
-
-    public void setUserLocation(String userLocation) {
-        this.userLocation = userLocation;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -68,7 +47,7 @@ public class RawTweet {
             return false;
         }
 
-        RawTweet tweet = (RawTweet) o;
+        Tweet tweet = (Tweet) o;
 
         if (!id.equals(tweet.id)) {
             return false;
@@ -86,6 +65,6 @@ public class RawTweet {
     @Override
     public String toString() {
         return "RawTweet{" + "id='" + id + '\'' + ", user='" + user + '\'' + ", content='" + content + '\'' + ", tags=" + Arrays.toString(
-                tags) + ", location=" + Arrays.toString(location) + ", userLocation='" + userLocation + '\'' + '}';
+                tags) + ", location=" + Arrays.toString(location) + '\'' + '}';
     }
 }

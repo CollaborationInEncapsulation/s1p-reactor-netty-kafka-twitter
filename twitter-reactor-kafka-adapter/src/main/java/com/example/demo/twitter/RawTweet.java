@@ -4,12 +4,21 @@ import java.util.Arrays;
 
 public class RawTweet {
 
-    private String   id;
-    private String   user;
-    private String   content;
-    private String[] tags;
-    private double[] location;
-    private String   userLocation;
+    private final String   id;
+    private final String   user;
+    private final String   content;
+    private final String[] tags;
+    private final double[] location;
+    private final String   userLocation;
+
+    public RawTweet(String id, String user, String content, String[] tags, double[] location, String userLocation) {
+        this.id = id;
+        this.user = user;
+        this.content = content;
+        this.location = location;
+        this.tags = tags;
+        this.userLocation = userLocation;
+    }
 
     public String getId() {
         return id;
@@ -33,30 +42,6 @@ public class RawTweet {
 
     public String getUserLocation() {
         return userLocation;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
-
-    public void setLocation(double[] location) {
-        this.location = location;
-    }
-
-    public void setUserLocation(String userLocation) {
-        this.userLocation = userLocation;
     }
 
     @Override

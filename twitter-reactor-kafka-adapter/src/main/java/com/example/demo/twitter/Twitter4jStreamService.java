@@ -10,15 +10,8 @@ import twitter4j.TwitterStreamFactory;
 public class Twitter4jStreamService implements TwitterStreamService {
 
     private static final String[] FILTER_KEY_WORDS = {
-        "S1P", "SpringOne", "SpringOnePlatform", "SpringFramework", "WebFlux", "R2DBC",
-        "Java", "Kotlin", "Scala", "JavaScript", "JS",
-        "ReactiveJava", "RxJava", "RxNetty", "RxKotlin", "RxScala", "RxJs",
-        "ProjectReactor", "ReactorNetty", "Reactor-Netty", "ReactorCore", "Reactor-Core", "ReactorKafka", "Reactor-Kafka", "ReactorScala", "Reactor-Scala", "ReactorRabbitMQ", "Reactor-RabbitMQ",
-        "Programming", "ReactiveProgramming", "ReactiveSystem", "ReactiveStreams", "Reactive-Streams", "Coding",
-        "ApacheKafka", "Kafka", "ReactiveKafka",
-        "Akka", "AkkaStreams", "Alpakka",
-        "Netty", "JDBC",
-        "Computer", "Science", "Software"
+            "Devoxx", "Devoxxua", "DevoxxUkraine", "java", "SpringFramework", "WebFlux",
+            "ProjectReactor", "ReactorNetty", "ReactorCore", "ReactorKafka", "ReactiveStreams"
     };
 
 
