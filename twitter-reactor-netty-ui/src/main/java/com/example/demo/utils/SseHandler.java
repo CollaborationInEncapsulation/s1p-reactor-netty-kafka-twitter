@@ -12,7 +12,9 @@ import java.util.function.BiFunction;
 public final class SseHandler {
 
     public static BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> serveSse(Flux<RawTweet> tweetsFlux) {
-        // Integration with Reactor Netty
+        return (req, res) -> res.header("Content-Type", "text/event-stream")
+                                .options(NettyPipeline.SendOptions::flushOnEach)
+                                .send(tweetsFlux.map(SerializingUtils::toByteBuffer));
     }
 
 }

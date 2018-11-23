@@ -13,7 +13,13 @@ import java.util.function.BiFunction;
 public final class StaticResourceHandler {
 
     public static BiFunction<HttpServerRequest, HttpServerResponse, Publisher<Void>> serveResource() {
-        // Integration with Reactor Netty
+        return (req, res) -> {
+            String uri = req.path();
+
+            Path path = Paths.get(resourceUri).resolve(("".equals(uri) ? "index.html" : uri));
+
+            return res.sendFile(path);
+        };
     }
 
 
