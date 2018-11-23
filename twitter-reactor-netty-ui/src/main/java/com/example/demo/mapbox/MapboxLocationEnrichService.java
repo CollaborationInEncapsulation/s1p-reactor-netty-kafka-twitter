@@ -27,10 +27,9 @@ public class MapboxLocationEnrichService implements LocationEnrichService {
         return rawTweetFlux
                 .flatMap(rawTweet -> {
                     if (rawTweet.getLocation().length == 0) {
-
-                        // Introduce Cache
-
-                        return Mono.create(sink -> {
+                        return CacheMono
+                                .lookup(placeCoordinatesMap, rawTweet.getUserLocation())
+                                .onCacheMissResume(Mono.create(sink -> {
                                     MapboxGeocoding client = MapboxGeocoding
                                             .builder()
                                             .accessToken(mapboxProperties.getToken())
