@@ -16,61 +16,52 @@ public class Twitter4jStreamService implements TwitterStreamService {
     };
 
 
-    Flux<RawTweet> tweetsFlux;
+    private final Flux<RawTweet> tweetsFlux;
 
     public Twitter4jStreamService() {
         this.tweetsFlux = Flux
             .<RawTweet>create(sink -> new TwitterStreamFactory()
                 .getInstance()
                 .addListener((SimpleStatusListener)(status) -> {
-                    if (status.getGeoLocation() != null) {
-                        sink.next(new RawTweet(
-                            String.valueOf(status.getId()),
-                            status.getUser().getName(),
-                            status.getText(),
-                            Arrays.stream(status.getHashtagEntities())
-                                  .map(HashtagEntity::getText)
-                                  .toArray(String[]::new),
-                            new double[]{
-                                status.getGeoLocation().getLongitude(),
-                                status.getGeoLocation().getLatitude()
-                            },
-                            status.getUser().getLocation()
-                        ));
-                    }
+                    if (status.getGeoLocation() != null || status.getPlace() != null || status.getUser().getLocation() != null) {
+                        RawTweet.Builder rawTweetBuilder = RawTweet
+                            .builder()
+                            .withId(String.valueOf(status.getId()))
+                            .withUser(status.getUser().getName())
+                            .withContent(status.getText())
+                            .withTags(
+                                Arrays.stream(status.getHashtagEntities())
+                                      .map(HashtagEntity::getText)
+                                      .toArray(String[]::new)
+                            )
+                            .withUserLocation(status.getUser().getLocation());
 
-                    if (status.getPlace() != null) {
-                        sink.next(new RawTweet(
-                            String.valueOf(status.getId()),
-                            status.getUser().getName(),
-                            status.getText(),
-                            Arrays.stream(status.getHashtagEntities())
-                                  .map(HashtagEntity::getText)
-                                  .toArray(String[]::new),
-                            new double[]{
-                                status.getPlace().getGeometryCoordinates()[0][0].getLongitude(),
-                                status.getPlace().getGeometryCoordinates()[0][0].getLatitude()
-                            },
-                            status.getUser().getLocation()
-                        ));
-                    }
+                        if (status.getGeoLocation() != null) {
+                            rawTweetBuilder.withLocation(
+                                new double[] {
+                                    status.getGeoLocation().getLongitude(),
+                                    status.getGeoLocation().getLatitude()
+                                }
+                            );
+                        }
 
-                    if(status.getUser().getLocation() != null) {
-                        sink.next(new RawTweet(
-                            String.valueOf(status.getId()),
-                            status.getUser().getName(),
-                            status.getText(),
-                            Arrays.stream(status.getHashtagEntities())
-                                  .map(HashtagEntity::getText)
-                                  .toArray(String[]::new),
-                            new double[0],
-                            status.getUser().getLocation()
-                        ));
+                        if (status.getPlace() != null) {
+                            rawTweetBuilder.withLocation(
+                                new double[] {
+                                    status.getPlace()
+                                          .getGeometryCoordinates()[0][0].getLongitude(),
+                                    status.getPlace()
+                                          .getGeometryCoordinates()[0][0].getLatitude()
+                                }
+                            );
+                        }
+
+                        sink.next(rawTweetBuilder.build());
                     }
                 })
                 .filter(FILTER_KEY_WORDS)
             )
-			.subscribeOn(Schedulers.elastic());
+			.subscribeOn(Schedulers.newSingle("Tweets-Processor"));
     }
 
     @Override

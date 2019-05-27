@@ -11,9 +11,14 @@ buildscript {
 	}
 }
 
+plugins {
+	id 'org.springframework.boot' version '2.1.5.RELEASE'
+}
+
 dependencies {
-  	compile "io.projectreactor.kafka:reactor-kafka"
+  	compile 'io.projectreactor.kafka:reactor-kafka'
   	compile 'com.fasterxml.jackson.core:jackson-databind'
   	compile 'org.twitter4j:twitter4j-core'
   	compile 'org.twitter4j:twitter4j-stream'
+	compile 'ch.qos.logback:logback-classic'
 }

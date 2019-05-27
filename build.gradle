@@ -13,7 +13,7 @@ allprojects {
   
 	dependencyManagement {
 		imports {
-		  mavenBom "io.projectreactor:reactor-bom:Californium-SR3"
+		  mavenBom "io.projectreactor:reactor-bom:Dysprosium-BUILD-SNAPSHOT"
 		}
 
 		dependencies {
@@ -22,7 +22,7 @@ allprojects {
 
 		  	dependency 'com.github.CollaborationInEncapsulation:okhttp-reactor-netty:03effb8da8'
 
-		  	dependency 'io.lettuce:lettuce-core:5.1.2.RELEASE'
+		  	dependency 'io.lettuce:lettuce-core:5.1.6.RELEASE'
 
 
 			dependency 'com.mapbox.mapboxsdk:mapbox-sdk-services:4.1.0'

@@ -6,6 +6,9 @@ import java.util.Properties;
 
 public class MapboxProperties {
 
+    private static final String TOKEN_KEY              = "token";
+    private static final String MAPBOX_PROPERTIES_FILE = "/mapbox.properties";
+
     private final String token;
 
     public MapboxProperties(String token) {
@@ -16,10 +19,6 @@ public class MapboxProperties {
         return token;
     }
 
-
-
-    static final String TOKEN_KEY = "token";
-    static final String MAPBOX_PROPERTIES_FILE = "mapbox.properties";
 
     public static MapboxProperties load() {
         return load(MapboxProperties.class.getResourceAsStream(MAPBOX_PROPERTIES_FILE));

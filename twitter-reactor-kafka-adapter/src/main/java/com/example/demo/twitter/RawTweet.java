@@ -11,7 +11,7 @@ public class RawTweet {
     private final double[] location;
     private final String   userLocation;
 
-    public RawTweet(String id, String user, String content, String[] tags, double[] location, String userLocation) {
+    private RawTweet(String id, String user, String content, String[] tags, double[] location, String userLocation) {
         this.id = id;
         this.user = user;
         this.content = content;
@@ -72,5 +72,58 @@ public class RawTweet {
     public String toString() {
         return "RawTweet{" + "id='" + id + '\'' + ", user='" + user + '\'' + ", content='" + content + '\'' + ", tags=" + Arrays.toString(
                 tags) + ", location=" + Arrays.toString(location) + ", userLocation='" + userLocation + '\'' + '}';
+    }
+
+
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+
+        private String   id;
+        private String   user;
+        private String   content;
+        private String[] tags;
+        private double[] location = new double[0];
+        private String   userLocation;
+
+        private Builder() {
+        }
+
+        public RawTweet build() {
+            return new RawTweet(id, user, content, tags, location, userLocation);
+        }
+
+        public Builder withContent(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public Builder withId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withLocation(double[] location) {
+            this.location = location;
+            return this;
+        }
+
+        public Builder withTags(String[] tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public Builder withUser(String user) {
+            this.user = user;
+            return this;
+        }
+
+        public Builder withUserLocation(String userLocation) {
+            this.userLocation = userLocation;
+            return this;
+        }
     }
 }
