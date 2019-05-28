@@ -7,12 +7,10 @@ import com.example.demo.twitter.TwitterStreamService;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderRecord;
-import reactor.util.Loggers;
 
 public class KafkaAdapterApplication {
 
     public static void main(String[] args) {
-        Loggers.useConsoleLoggers();
         TwitterStreamService twitterStreamService = new Twitter4jStreamService();
         KafkaSender<String, RawTweet> kafkaSender = KafkaSender.create(KafkaCommons.resource("kafka.properties"));
 

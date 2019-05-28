@@ -12,7 +12,7 @@ public class KafkaTwitterStreamService implements TwitterStreamService {
 
     public KafkaTwitterStreamService() {
         this.tweetsFlux = KafkaReceiver
-            .create(KafkaCommons.<String, RawTweet>resource("kafka.properties")
+            .create(KafkaCommons.<String, RawTweet>resource("/kafka.properties")
                                 .subscription(Collections.singleton("tweets")))
             .receive()
             .concatMap(record -> record.receiverOffset()

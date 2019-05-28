@@ -1,6 +1,7 @@
 package com.example.demo.mapbox;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,14 +26,14 @@ public class MapboxProperties {
     static final String MAPBOX_PROPERTIES_FILE = "mapbox.properties";
 
     public static MapboxProperties load() {
-        return load(Paths.get(ClassLoader.getSystemResource(MAPBOX_PROPERTIES_FILE).getFile()));
+        return load(MapboxProperties.class.getResourceAsStream(MAPBOX_PROPERTIES_FILE));
     }
 
-    public static MapboxProperties load(Path path) {
+    public static MapboxProperties load(InputStream path) {
         Properties properties = new Properties();
 
         try {
-            properties.load(Files.newInputStream(path, StandardOpenOption.READ));
+            properties.load(path);
         }
         catch (IOException e) {
             throw  new RuntimeException(e);

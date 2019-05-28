@@ -14,11 +14,9 @@ import reactor.cache.CacheMono;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Signal;
-import reactor.okhttp.netty.ReactorNettyCallFactory;
 
 public class MapboxLocationEnrichService implements LocationEnrichService {
 
-    final ReactorNettyCallFactory nettyCallFactory = new ReactorNettyCallFactory();
     final MapboxProperties mapboxProperties = MapboxProperties.load();
     final Map<String, Signal<? extends double[]>> placeCoordinatesMap = new ConcurrentHashMap<>();
 
@@ -38,8 +36,6 @@ public class MapboxLocationEnrichService implements LocationEnrichService {
                                             .geocodingTypes(GeocodingCriteria.TYPE_POI)
                                             .mode(GeocodingCriteria.MODE_PLACES)
                                             .build();
-
-                                    client.setCallFactory(nettyCallFactory);
 
                                     client.enqueueCall(LambdaCallback.create((response, e) -> {
                                         if(response == null || response.body() == null || response.body().features().isEmpty()) {

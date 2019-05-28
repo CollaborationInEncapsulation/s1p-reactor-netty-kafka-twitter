@@ -1,9 +1,13 @@
 package com.example.demo.utils;
 
+import org.apache.commons.io.IOUtils;
 import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -16,9 +20,13 @@ public final class StaticResourceHandler {
         return (req, res) -> {
             String uri = req.path();
 
-            Path path = Paths.get(resourceUri).resolve(("".equals(uri) ? "index.html" : uri));
-
-            return res.sendFile(path);
+            try {
+                byte[] byteArray  = IOUtils.resourceToByteArray("/static/" + ("".equals(uri)  ? "index.html" : uri));
+                return res.sendByteArray(Mono.just(byteArray));
+            }
+            catch (IOException e) {
+                return Mono.error(e);
+            }
         };
     }
 
@@ -29,7 +37,7 @@ public final class StaticResourceHandler {
     static {
         URI uri;
         try {
-            uri = ClassLoader.getSystemResource("static").toURI();
+            uri = StaticResourceHandler.class.getResource("/static").toURI();
         } catch (URISyntaxException e) {
             uri = null;
         }

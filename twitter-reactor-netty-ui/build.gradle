@@ -11,12 +11,19 @@ buildscript {
 	}
 }
 
+
+plugins {
+	id 'org.springframework.boot' version '2.1.5.RELEASE'
+}
+
 apply from: '../gradle/node.gradle'
 
+
 dependencies {
+	compile 'commons-io:commons-io:2.6'
+	compile 'io.projectreactor.tools:blockhound:1.0.0.M3'
 	compile 'com.mapbox.mapboxsdk:mapbox-sdk-services'
 	compile 'com.github.CollaborationInEncapsulation:okhttp-reactor-netty'
-	compile 'io.projectreactor.addons:reactor-logback'
 	compile 'io.projectreactor.addons:reactor-extra'
 	compile 'io.projectreactor.kafka:reactor-kafka'
 	compile 'io.projectreactor.netty:reactor-netty'

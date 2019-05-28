@@ -10,8 +10,9 @@ import twitter4j.TwitterStreamFactory;
 public class Twitter4jStreamService implements TwitterStreamService {
 
     private static final String[] FILTER_KEY_WORDS = {
-            "Devoxx", "Devoxxua", "DevoxxUkraine", "java", "SpringFramework", "WebFlux",
-            "ProjectReactor", "ReactorNetty", "ReactorCore", "ReactorKafka", "ReactiveStreams"
+        "JPrime", "@jPrimeConf", "jPrimeConf", "JPrime2019", "#jprime", "#jprime2019",
+        "SpringFramework", "WebFlux", "ProjectReactor", "ReactorNetty", "ReactorCore",
+        "ReactorKafka", "ReactiveStreams", "BlockHound", "ReactorTools"
     };
 
 
