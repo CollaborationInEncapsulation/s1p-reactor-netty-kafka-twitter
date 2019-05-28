@@ -4,12 +4,21 @@ import java.util.Arrays;
 
 public class RawTweet {
 
-    private String   id;
-    private String   user;
-    private String   content;
-    private String[] tags;
-    private double[] location;
-    private String   userLocation;
+    private final String   id;
+    private final String   user;
+    private final String   content;
+    private final String[] tags;
+    private final double[] location;
+    private final String   userLocation;
+
+    private RawTweet(String id, String user, String content, String[] tags, double[] location, String userLocation) {
+        this.id = id;
+        this.user = user;
+        this.content = content;
+        this.location = location;
+        this.tags = tags;
+        this.userLocation = userLocation;
+    }
 
     public String getId() {
         return id;
@@ -33,30 +42,6 @@ public class RawTweet {
 
     public String getUserLocation() {
         return userLocation;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
-
-    public void setLocation(double[] location) {
-        this.location = location;
-    }
-
-    public void setUserLocation(String userLocation) {
-        this.userLocation = userLocation;
     }
 
     @Override
@@ -87,5 +72,58 @@ public class RawTweet {
     public String toString() {
         return "RawTweet{" + "id='" + id + '\'' + ", user='" + user + '\'' + ", content='" + content + '\'' + ", tags=" + Arrays.toString(
                 tags) + ", location=" + Arrays.toString(location) + ", userLocation='" + userLocation + '\'' + '}';
+    }
+
+
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+
+        private String   id;
+        private String   user;
+        private String   content;
+        private String[] tags;
+        private double[] location = new double[0];
+        private String   userLocation;
+
+        private Builder() {
+        }
+
+        public RawTweet build() {
+            return new RawTweet(id, user, content, tags, location, userLocation);
+        }
+
+        public Builder withContent(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public Builder withId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withLocation(double[] location) {
+            this.location = location;
+            return this;
+        }
+
+        public Builder withTags(String[] tags) {
+            this.tags = tags;
+            return this;
+        }
+
+        public Builder withUser(String user) {
+            this.user = user;
+            return this;
+        }
+
+        public Builder withUserLocation(String userLocation) {
+            this.userLocation = userLocation;
+            return this;
+        }
     }
 }

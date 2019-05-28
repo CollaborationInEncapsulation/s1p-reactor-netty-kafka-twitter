@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
-final class SerializingUtils {
+public final class SerializingUtils {
     static final ObjectMapper MAPPER = new ObjectMapper();
 
-    static ByteBuf toByteBuffer(Object any) {
+    public static ByteBuf toByteBuffer(Object any) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             out.write("data: ".getBytes(Charset.defaultCharset()));

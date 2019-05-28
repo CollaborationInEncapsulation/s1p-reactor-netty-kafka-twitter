@@ -20,6 +20,8 @@ apply from: '../gradle/node.gradle'
 
 
 dependencies {
+	compile 'org.twitter4j:twitter4j-core'
+	compile 'org.twitter4j:twitter4j-stream'
 	compile 'commons-io:commons-io:2.6'
 	compile 'io.projectreactor.tools:blockhound:1.0.0.M3'
 	compile 'com.mapbox.mapboxsdk:mapbox-sdk-services'

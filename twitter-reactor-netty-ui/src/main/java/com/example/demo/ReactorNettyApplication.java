@@ -2,8 +2,8 @@ package com.example.demo;
 
 import com.example.demo.mapbox.LocationEnrichService;
 import com.example.demo.mapbox.MapboxLocationEnrichService;
-import com.example.demo.twitter.KafkaTwitterStreamService;
 import com.example.demo.twitter.Tweet;
+import com.example.demo.twitter.Twitter4jStreamService;
 import com.example.demo.twitter.TwitterStreamService;
 import com.example.demo.utils.SseHandler;
 import com.example.demo.utils.StaticResourceHandler;
